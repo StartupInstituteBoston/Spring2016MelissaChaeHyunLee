@@ -3,11 +3,12 @@ class RestaurantsController < ApplicationController
   before_action :authenticate_owner!, except: [:index, :show]
 
   def new
-    @restaurant = Restaurant.new
+    @restaurant = current_owner.restaurants.new
   end
 
   def edit
-    @restaurant = Restaurant.find(params[:id])
+    @restaurant = current_owner.restaurants.find_by_id(params[:id])
+    return redirect_to restaurants_url, notice: "cannot edit restaurant" unless @restaurant
   end
 
   def index
@@ -20,6 +21,7 @@ class RestaurantsController < ApplicationController
 
   def create
     @restaurant = current_owner.restaurants.new(restaurant_params)
+    @restaurant.owner = current_owner
 
     if @restaurant.save
       redirect_to @restaurant
@@ -29,7 +31,7 @@ class RestaurantsController < ApplicationController
   end
 
   def update
-    @restaurant = Restaurant.find(params[:id])
+    @restaurant = current_owner.restaurants.find_by_id(params[:id])
 
     if @restaurant.update(restaurant_params)
       redirect_to @restaurant
@@ -39,7 +41,8 @@ class RestaurantsController < ApplicationController
   end
 
   def destroy
-    @restaurant = Restaurant.find(params[:id])
+    @restaurant = current_owner.restaurants.find_by_id(params[:id])
+    return redirect_to restaurants_url, notice: "cannot delete restaurant" unless @restaurant
     @restaurant.destroy
 
     redirect_to restaurants_path
