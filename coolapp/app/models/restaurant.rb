@@ -3,4 +3,6 @@ class Restaurant < ActiveRecord::Base
   validates :address, presence: true, length: { minimum: 1 }
   validates :phone, presence: true, length: { minimum: 1 }
   validates :description, presence: true, length: { minimum: 1 }
+
+  belongs_to :owner
 end
