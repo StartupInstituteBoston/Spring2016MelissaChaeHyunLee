@@ -1,5 +1,7 @@
 class RestaurantsController < ApplicationController
 
+  before_action :authenticate_owner!, except: [:index, :show]
+
   def new
     @restaurant = Restaurant.new
   end
